@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HyperCube</string>
+    <string name="list_adapter_view_holder">Do-Not-Delete</string>
 </resources>
