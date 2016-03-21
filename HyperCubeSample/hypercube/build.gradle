@@ -1,5 +1,23 @@
 apply plugin: 'com.android.library'
 
+ext{
+    bintrayRepo = 'maven'
+    bintrayName = 'hypercube'
+
+    // Maven Metadata
+    publishedGroupId = 'com.neurospeech.android'
+    libraryName = 'hypercube'
+
+    artifact = 'hypercube'
+
+    libraryDecription = 'NeuroSpeech HyperCube Application Framework for Android'
+    libraryVersion = '1.0'
+
+    developerId = 'neurospeech'
+    developerName = 'neurospeech'
+    developerEmail = 'support@neurospeech.com'
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
@@ -38,3 +56,6 @@ dependencies {
             [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.1']
     )
 }
+
+apply from 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+apply from 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
