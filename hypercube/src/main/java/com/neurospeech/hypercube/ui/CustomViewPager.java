@@ -83,6 +83,12 @@ public class CustomViewPager extends ViewPager {
         return false;
     }
 
+    public PagerFragment getSelectedFragment() {
+        return selectedFragment;
+    }
+
+    PagerFragment selectedFragment;
+
 
     PageChangeListener pageChangeListener = new PageChangeListener();
 
@@ -102,7 +108,6 @@ public class CustomViewPager extends ViewPager {
             });
         }*/
 
-        PagerFragment selectedFragment;
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
