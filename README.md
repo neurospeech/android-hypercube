@@ -1,4 +1,4 @@
-# Hypercube = Promises + RetroFit + OkHttp
+# Hypercube = Promises + RetroFit2 + OkHttp3
 
 Project level gradle
 
@@ -10,5 +10,5 @@ Project level gradle
 	  
 
     dependencies {
-		   compile 'com.github.neurospeech:android-hypercube:v1.02'
+		   compile 'com.github.neurospeech:android-hypercube:v1.05'
 	  }
