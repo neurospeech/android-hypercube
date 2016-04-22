@@ -5,9 +5,10 @@ import android.content.SharedPreferences;
 
 import com.neurospeech.hypercube.service.json.JacksonConverterFactory;
 import com.neurospeech.hypercube.service.json.PromiseConverterFactory;
-import com.squareup.okhttp.OkHttpClient;
 
-import retrofit.Retrofit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * Created by Gigster on 30-12-2015.

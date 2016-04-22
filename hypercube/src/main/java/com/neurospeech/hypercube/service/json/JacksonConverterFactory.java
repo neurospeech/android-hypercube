@@ -5,17 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import retrofit.Converter;
-import retrofit.Retrofit;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Converter;
+import retrofit2.Retrofit;
 
 /**
  * A {@linkplain Converter.Factory converter} which uses Jackson.
@@ -46,14 +46,14 @@ public final class JacksonConverterFactory extends Converter.Factory {
     }
 
     @Override
-    public Converter<ResponseBody, ?> fromResponseBody(Type type, Annotation[] annotations) {
+    public Converter<okhttp3.ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
         JavaType javaType = mapper.getTypeFactory().constructType(type);
         ObjectReader reader = mapper.reader(javaType);
         return new JacksonResponseBodyConverter<>(reader);
     }
 
     @Override
-    public Converter<?, RequestBody> toRequestBody(Type type, Annotation[] annotations) {
+    public Converter<?, okhttp3.RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
         JavaType javaType = mapper.getTypeFactory().constructType(type);
         ObjectWriter writer = mapper.writerWithType(javaType);
         return new JacksonRequestBodyConverter<>(writer);

@@ -9,17 +9,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import retrofit.Call;
-import retrofit.CallAdapter;
-import retrofit.Callback;
-import retrofit.Converter;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.CallAdapter;
+import retrofit2.Callback;
+import retrofit2.Converter;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Created by Akash on 12/5/2015.
  */
-public class PromiseConverterFactory implements CallAdapter.Factory {
+public class PromiseConverterFactory extends CallAdapter.Factory {
 
     public static PromiseConverterFactory create(){
         return new PromiseConverterFactory();

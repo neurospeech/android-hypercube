@@ -19,9 +19,10 @@ import org.json.JSONTokener;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Created by .kava on 10/20/2015.
@@ -70,11 +71,11 @@ public class Promise<T> {
 
 
         return new Callback<T>() {
-            public void onResponse(final Response<T> response, Retrofit retrofit) {
 
-                
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
 
-                if (response.isSuccess()) {
+                if (response.isSuccessful()) {
                     onResult(response.body(), null);
                 } else {
                     try {
@@ -96,7 +97,7 @@ public class Promise<T> {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<T> call, Throwable t) {
                 String e = HyperCubeApplication.toString(t);
                 //Log.e("Error Response:", e);
                 HyperCubeApplication.current.logError(e);
