@@ -158,7 +158,6 @@ public class Promise<T> {
                         this.error = errorJson.optString("message");
                     }else if (errorJson.has("error")) {
                         this.error = errorJson.optString("error");
-                    }
                     }else if (errorJson.has("errors")) {
                         this.error = errorJson.optString("errors");
                     }else{
