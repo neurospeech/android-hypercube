@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -161,7 +162,17 @@ public class Promise<T> {
                     }else if (errorJson.has("errors")) {
                         this.error = errorJson.optString("errors");
                     }else{
-                        this.error = errorJson.toString();
+                        //this.error = errorJson.toString();
+                        StringBuilder sb = new StringBuilder();
+                        Iterator<String> it = errorJson.keys();
+                        while(it.hasNext()){
+                            String key = it.next();
+                            sb.append(key);
+                            sb.append(' ');
+                            sb.append(errorJson.get(key).toString());
+                            sb.append("\r\n");
+                        }
+                        this.error = sb.toString();
                     }
                 } catch (Exception ex) {
                     // ignore...

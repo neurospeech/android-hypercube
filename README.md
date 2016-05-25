@@ -10,7 +10,7 @@ Project level gradle
 	  
 
     dependencies {
-		   compile 'com.github.neurospeech:android-hypercube:v1.06'
+		   compile 'com.github.neurospeech:android-hypercube:v1.08'
 	  }
 
 
@@ -32,6 +32,8 @@ Service Example
         	
         	}
         }
+		
+Service is now independent of OkHttp library, so your code can stay independent of underlying implementation. It is also very easy to create a mock by simply inheriting MockService and implementing API interface.		
         
 Service Usage
 
@@ -48,3 +50,4 @@ Service Usage
 			
 			}
 		});
+
