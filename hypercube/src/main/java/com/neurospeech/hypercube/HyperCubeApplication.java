@@ -142,4 +142,8 @@ public class HyperCubeApplication  {
         return msg;
     }
 
+    public void logError(Exception ex) {
+        String error = toString(ex);
+        logError(error);
+    }
 }

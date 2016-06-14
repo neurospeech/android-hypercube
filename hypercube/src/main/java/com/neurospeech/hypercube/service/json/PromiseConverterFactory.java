@@ -2,6 +2,7 @@ package com.neurospeech.hypercube.service.json;
 
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.neurospeech.hypercube.HyperCubeApplication;
 import com.neurospeech.hypercube.service.Promise;
 
 
@@ -29,32 +30,45 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
     @Override
     public CallAdapter<?> get(final Type returnType, Annotation[] annotations, Retrofit retrofit) {
 
-        Class<?> cls = TypeFactory.rawClass(returnType);
+        try {
+            Class<?> cls = TypeFactory.rawClass(returnType);
 
-        if(!Promise.class.isAssignableFrom(cls))
-            return null;
+            if (!Promise.class.isAssignableFrom(cls))
+                return null;
 
-        if (!(returnType instanceof ParameterizedType)) {
-            throw new IllegalStateException(
-                    "ListenableFuture must have generic type (e.g., ListenableFuture<ResponseBody>)");
+            if (!(returnType instanceof ParameterizedType)) {
+                throw new IllegalStateException(
+                        "ListenableFuture must have generic type (e.g., ListenableFuture<ResponseBody>)");
+            }
+            final Type responseType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
+            return new CallAdapter<Promise<?>>() {
+
+                @Override
+                public Type responseType() {
+                    return responseType;
+                }
+
+                @Override
+                public <R> Promise<R> adapt(Call<R> call) {
+
+                    try {
+                        Promise<R> promise = new Promise<R>();
+                        call.enqueue(promise.callback());
+                        promise.onStarted();
+
+                        return promise;
+                    }catch (Exception ex){
+                        HyperCubeApplication.current.logError(ex);
+                        throw ex;
+                    }
+                }
+            };
+        }catch (Exception ex){
+
+            HyperCubeApplication.current.logError(ex);
+
+            throw ex;
         }
-        final Type responseType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
-        return new CallAdapter<Promise<?>>() {
-
-            @Override
-            public Type responseType() {
-                return responseType;
-            }
-
-            @Override
-            public <R> Promise<R> adapt(Call<R> call) {
-                Promise<R> promise = new Promise<R>();
-                call.enqueue(promise.callback());
-                promise.onStarted();
-
-                return promise;
-            }
-        };
     }
 
 }
