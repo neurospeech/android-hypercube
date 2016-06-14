@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.neurospeech.hypercube.HyperCubeApplication;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -86,6 +87,8 @@ public final class JacksonConverterFactory extends Converter.Factory {
             try {
                 return adapter.readValue(response);
             }catch (Exception ex){
+                String error = HyperCubeApplication.toString(ex);
+                HyperCubeApplication.current.logError(response + "\r\n" + error);
                 throw  new JacksonParserException(response,ex);
             }
         }
