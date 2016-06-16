@@ -1,4 +1,5 @@
 package com.neurospeech.hypercube.service.json;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,12 @@ public final class JacksonConverterFactory extends Converter.Factory {
         this.mapper = mapper;
         this.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         this.mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+        this.mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        if(JacksonConfig.defaultConfig!=null){
+            JacksonConfig.defaultConfig.setup(mapper);
+        }
+
     }
 
     @Override
