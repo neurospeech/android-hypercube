@@ -122,6 +122,16 @@ public class Promise<T> {
         return this;
     }
 
+    public Promise<T> then(final Promise<T> p){
+        next.add(new IResultListener<T>() {
+            @Override
+            public void onResult(Promise<T> promise) {
+                p.onResult(promise.getResult(),promise.getError());
+            }
+        });
+        return this;
+    }
+
     PopupWindow busy = null;
 
     public void onStarted(){
