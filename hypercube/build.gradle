@@ -25,8 +25,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 17
-        versionName "1.17"
+        versionCode 18
+        versionName "1.18"
     }
     buildTypes {
         release {
@@ -49,11 +49,11 @@ dependencies {
     //Tablayout
     compile 'com.android.support:design:23.1.1'
 
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile(
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.4.1'],
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.4.1'],
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.1']
+            [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.7.5'],
+            [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.7.5'],
+            [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.7.5']
     )
 }
 
