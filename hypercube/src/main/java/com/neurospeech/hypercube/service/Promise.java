@@ -144,6 +144,14 @@ public class Promise<T> {
         });
     }
 
+    public void onError(Exception error){
+        String e = null;
+        if(error != null) {
+            e = HyperCubeApplication.toString(error);
+        }
+        onResult(null,e);
+    }
+
     public void onResult(T r,String error){
 
         HyperCubeApplication.current.post(new Runnable() {
@@ -292,6 +300,19 @@ public class Promise<T> {
         });
         return promise;
     }
+
+
+    public static <RT> Promise<RT> withError(final Exception ex){
+        final Promise<RT> promise = new Promise<>();
+        HyperCubeApplication.current.post(new Runnable() {
+            @Override
+            public void run() {
+                promise.onError(ex);
+                       }
+        });
+        return promise;
+    }
+
 
     public void setResult(T result) {
         this.result = result;
