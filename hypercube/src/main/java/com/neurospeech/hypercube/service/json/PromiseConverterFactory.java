@@ -11,6 +11,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Callback;
@@ -29,7 +30,7 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
 
 
     @Override
-    public CallAdapter<?> get(final Type returnType, Annotation[] annotations, Retrofit retrofit) {
+    public CallAdapter<?> get(final Type returnType, Annotation[] annotations, final Retrofit retrofit) {
 
         try {
             Class<?> cls = TypeFactory.rawClass(returnType);
@@ -42,7 +43,10 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
                         "ListenableFuture must have generic type (e.g., ListenableFuture<ResponseBody>)");
             }
             final Type responseType = ((ParameterizedType) returnType).getActualTypeArguments()[0];
+
             return new CallAdapter<Promise<?>>() {
+
+                private Object cachedConverter;
 
                 @Override
                 public Type responseType() {
@@ -54,7 +58,13 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
 
                     try {
                         Promise<R> promise = new Promise<R>();
-                        call.enqueue(promise.callback(PromiseConverterFactory.this));
+
+                        if(cachedConverter==null) {
+                            cachedConverter = retrofit.responseBodyConverter(responseType, new Annotation[]{});
+                        }
+                        Converter<ResponseBody,R> converter = (Converter<ResponseBody, R>)cachedConverter;
+
+                        call.enqueue(promise.callback(PromiseConverterFactory.this,converter));
                         promise.onStarted();
 
                         return promise;

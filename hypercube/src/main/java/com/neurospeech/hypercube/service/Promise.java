@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -69,7 +71,7 @@ public class Promise<T> {
         return result;
     }
 
-    public Callback<T> callback(final PromiseConverterFactory factory) {
+    public Callback<T> callback(final PromiseConverterFactory factory, final Converter<ResponseBody,T> converter) {
 
 
         return new Callback<T>() {
@@ -77,10 +79,15 @@ public class Promise<T> {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
 
-                if (factory.isResponseSuccess(call.request(), response.raw())) {
-                    onResult(response.body(), null);
-                } else {
-                    try {
+                try {
+                    if (factory.isResponseSuccess(call.request(), response.raw())) {
+                        if(!response.isSuccessful()){
+                            String msg = response.errorBody().toString();
+                            converter.convert(response.raw().body());
+                        }else {
+                            onResult(response.body(), null);
+                        }
+                    } else {
                         String message = response.errorBody().string();
                         if(message.isEmpty())
                         {
@@ -88,13 +95,12 @@ public class Promise<T> {
                         }
                         onResult(null, message);
                         HyperCubeApplication.current.logError(message);
-                        //Log.e("Error Response:", message);
-                    } catch (Exception ex) {
-                        //Log.e("Error Response:",AndroidApplication.toString(ex));
-                        String message = HyperCubeApplication.toString(ex);
-                        HyperCubeApplication.current.logError(message);
-                        onResult(null, message);
                     }
+                } catch (Exception ex) {
+                    //Log.e("Error Response:",AndroidApplication.toString(ex));
+                    String message = HyperCubeApplication.toString(ex);
+                    HyperCubeApplication.current.logError(message);
+                    onResult(null, message);
                 }
             }
 
