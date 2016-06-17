@@ -1,4 +1,11 @@
-# Hypercube = Promises + RetroFit2 + OkHttp3
+# Hypercube = Promises + RetroFit2 + OkHttp3 + Jackson
+
+- Jackson customization
+- RetroFit Error parsing in body
+- Lightweight Promise<T> instead of Call<T>
+- Promise.whenAll
+- Display busy animation while http call is in progress
+
 
 Project level gradle
 
@@ -10,7 +17,7 @@ Project level gradle
 	  
 
     dependencies {
-		   compile 'com.github.neurospeech:android-hypercube:v1.08'
+		   compile 'com.github.neurospeech:android-hypercube:v1.23'
 	  }
 
 
@@ -37,8 +44,7 @@ Service is now independent of OkHttp library, so your code can stay independent 
         
 Service Usage
 
-	APIService service;
-	service.login(...)
+	apiService.login(...)
 		.then(new IResultListener<Result>(){
 			void onResult(Promise<Result> promise){
 			
@@ -46,6 +52,7 @@ Service Usage
 					// error.. something went wrong...
 				}else{
 					// success...
+					Result result = promise.getResult();
 				}
 			
 			}

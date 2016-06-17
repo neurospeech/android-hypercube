@@ -12,6 +12,7 @@ import android.widget.PopupWindow;
 
 import com.neurospeech.hypercube.HyperCubeApplication;
 import com.neurospeech.hypercube.service.json.PromiseConverterFactory;
+import com.neurospeech.hypercube.service.json.StringConverter;
 import com.neurospeech.hypercube.ui.AnimatedCircleDrawable;
 
 import org.json.JSONObject;
@@ -83,7 +84,11 @@ public class Promise<T> {
                     if (factory.isResponseSuccess(call.request(), response.raw())) {
                         if(!response.isSuccessful()){
                             String msg = response.errorBody().toString();
-                            converter.convert(response.raw().body());
+                            StringConverter<T> stringConverter = (StringConverter<T>)converter;
+                            T value = stringConverter.convert(msg);
+                            onResult(value,null);
+                            //onResult(converter.convert(response.raw().body()),null);
+
                         }else {
                             onResult(response.body(), null);
                         }

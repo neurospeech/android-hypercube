@@ -82,7 +82,9 @@ public final class JacksonConverterFactory extends Converter.Factory {
         }
     }
 
-    static class JacksonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
+    static class JacksonResponseBodyConverter<T>
+            implements Converter<ResponseBody, T>
+            ,StringConverter<T>{
         private final ObjectReader adapter;
 
         JacksonResponseBodyConverter(ObjectReader adapter) {
@@ -90,6 +92,7 @@ public final class JacksonConverterFactory extends Converter.Factory {
         }
 
         @Override public T convert(ResponseBody value) throws IOException {
+
             String response = value.string();
             try {
                 return adapter.readValue(response);
@@ -98,6 +101,11 @@ public final class JacksonConverterFactory extends Converter.Factory {
                 HyperCubeApplication.current.logError(response + "\r\n" + error);
                 throw  new JacksonParserException(response,ex);
             }
+        }
+
+        @Override
+        public T convert(String text) throws Exception {
+            return adapter.readValue(text);
         }
     }
 
