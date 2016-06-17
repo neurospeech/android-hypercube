@@ -83,7 +83,7 @@ public class Promise<T> {
                 try {
                     if (factory.isResponseSuccess(call.request(), response.raw())) {
                         if(!response.isSuccessful()){
-                            String msg = response.errorBody().toString();
+                            String msg = response.errorBody().string();
                             StringConverter<T> stringConverter = (StringConverter<T>)converter;
                             T value = stringConverter.convert(msg);
                             onResult(value,null);
