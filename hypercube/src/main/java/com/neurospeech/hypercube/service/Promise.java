@@ -77,7 +77,7 @@ public class Promise<T> {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
 
-                if (factory.isResponseSuccess(response.raw())) {
+                if (factory.isResponseSuccess(call.request(), response.raw())) {
                     onResult(response.body(), null);
                 } else {
                     try {

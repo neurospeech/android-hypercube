@@ -10,6 +10,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Callback;
@@ -71,7 +72,7 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
         }
     }
 
-    public boolean isResponseSuccess(okhttp3.Response raw) {
-        return raw.isSuccessful();
+    public boolean isResponseSuccess(Request request, okhttp3.Response response) {
+        return response.isSuccessful();
     }
 }
