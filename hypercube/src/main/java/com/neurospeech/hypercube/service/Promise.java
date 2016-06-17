@@ -81,7 +81,7 @@ public class Promise<T> {
             public void onResponse(Call<T> call, Response<T> response) {
 
                 try {
-                    if (factory.isResponseSuccess(call.request(), response.raw())) {
+                    if (factory.isResponseSuccess(call.request(), response.raw()) && (converter instanceof StringConverter) ) {
                         if(!response.isSuccessful()){
                             String msg = response.errorBody().string();
                             StringConverter<T> stringConverter = (StringConverter<T>)converter;
