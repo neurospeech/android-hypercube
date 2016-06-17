@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 
 
 import com.neurospeech.hypercube.HyperCubeApplication;
+import com.neurospeech.hypercube.service.json.PromiseConverterFactory;
 import com.neurospeech.hypercube.ui.AnimatedCircleDrawable;
 
 import org.json.JSONObject;
@@ -68,7 +69,7 @@ public class Promise<T> {
         return result;
     }
 
-    public Callback<T> callback() {
+    public Callback<T> callback(final PromiseConverterFactory factory) {
 
 
         return new Callback<T>() {
@@ -76,7 +77,7 @@ public class Promise<T> {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
 
-                if (response.isSuccessful()) {
+                if (factory.isResponseSuccess(response.raw())) {
                     onResult(response.body(), null);
                 } else {
                     try {

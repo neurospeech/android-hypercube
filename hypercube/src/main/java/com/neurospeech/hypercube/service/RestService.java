@@ -2,6 +2,7 @@ package com.neurospeech.hypercube.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.neurospeech.hypercube.service.json.JacksonConverterFactory;
 import com.neurospeech.hypercube.service.json.PromiseConverterFactory;
@@ -45,13 +46,23 @@ public abstract class RestService {
         Retrofit.Builder builder = new Retrofit.Builder();
         builder.baseUrl(baseUrl);
         builder.client(client);
-        builder.addConverterFactory(JacksonConverterFactory.create());
-        builder.addCallAdapterFactory(PromiseConverterFactory.create());
+        builder.addConverterFactory(createConverterFactory());
+        builder.addCallAdapterFactory(createCallAdapterFactory());
 
         retrofit = builder.build();
 
         return retrofit.create(apiClass);
 
+    }
+
+    @NonNull
+    protected PromiseConverterFactory createCallAdapterFactory() {
+        return PromiseConverterFactory.create();
+    }
+
+    @NonNull
+    protected JacksonConverterFactory createConverterFactory() {
+        return JacksonConverterFactory.create();
     }
 
 

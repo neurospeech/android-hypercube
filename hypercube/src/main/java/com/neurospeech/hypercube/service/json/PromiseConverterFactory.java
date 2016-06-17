@@ -53,7 +53,7 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
 
                     try {
                         Promise<R> promise = new Promise<R>();
-                        call.enqueue(promise.callback());
+                        call.enqueue(promise.callback(PromiseConverterFactory.this));
                         promise.onStarted();
 
                         return promise;
@@ -71,4 +71,7 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
         }
     }
 
+    public boolean isResponseSuccess(okhttp3.Response raw) {
+        return raw.isSuccessful();
+    }
 }
