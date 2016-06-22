@@ -2,6 +2,7 @@ package com.neurospeech.hypercubesample;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.neurospeech.hypercube.HyperCubeApplication;
@@ -23,6 +24,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         },1000);
+
+
+        findViewById(R.id.mainView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runService();
+            }
+        });
 
     }
 

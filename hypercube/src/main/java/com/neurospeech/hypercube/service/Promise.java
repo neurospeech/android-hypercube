@@ -4,10 +4,12 @@ package com.neurospeech.hypercube.service;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.AppCompatPopupWindow;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 
 
 import com.neurospeech.hypercube.HyperCubeApplication;
@@ -35,6 +37,44 @@ import retrofit2.Retrofit;
 public class Promise<T> {
 
 
+    public static PromiseProgressCreator getCreator() {
+        return creator;
+    }
+
+    public static void setCreator(PromiseProgressCreator creator) {
+        Promise.creator = creator;
+    }
+
+    private static PromiseProgressCreator creator = new PromiseProgressCreator() {
+
+        PopupWindow popupWindow = null;
+        Activity activity = null;
+        @Override
+        public PopupWindow create(Activity currentActivity) {
+            if(activity!=currentActivity || popupWindow==null){
+                activity = currentActivity;
+                popupWindow = new PopupWindow(currentActivity);
+                popupWindow.setFocusable(false);
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0));
+
+                ProgressBar progressBar = new ProgressBar(currentActivity);
+                progressBar.setIndeterminate(true);
+                progressBar.setMinimumWidth(60);
+                progressBar.setMinimumHeight(60);
+
+                //ImageView img = new ImageView(currentActivity);
+                popupWindow.setContentView(progressBar);
+                //popupWindow.setWidth(60);
+                //popupWindow.setHeight(60);
+                //AnimatedCircleDrawable a = new AnimatedCircleDrawable(Color.RED,5,Color.TRANSPARENT,30);
+                //img.setImageDrawable(a);
+                //a.start();
+            }
+            return popupWindow;
+        }
+    };
+
+
     private boolean showProgress = true;
     public Promise<T> setShowProgress(boolean v){
         showProgress = v;
@@ -47,18 +87,10 @@ public class Promise<T> {
         if(currentActivity==null)
             return null;
 
-        PopupWindow pw = new PopupWindow(currentActivity);
-        pw.setFocusable(false);
-        pw.setBackgroundDrawable(new ColorDrawable(0));
-        ImageView img = new ImageView(currentActivity);
-        pw.setContentView(img);
         View view = currentActivity.getWindow().getDecorView();
-        pw.setWidth(60);
-        pw.setHeight(60);
-        AnimatedCircleDrawable a = new AnimatedCircleDrawable(Color.RED,5,Color.TRANSPARENT,30);
-        img.setImageDrawable(a);
+
+        PopupWindow pw = creator.create(currentActivity);
         pw.showAtLocation(view, Gravity.LEFT | Gravity.TOP, view.getWidth() / 2 - 30, view.getHeight() / 2 - 30);
-        a.start();
         return pw;
     }
 

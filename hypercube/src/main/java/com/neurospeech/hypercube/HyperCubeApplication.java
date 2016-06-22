@@ -66,12 +66,14 @@ public class HyperCubeApplication  {
 
             @Override
             public void onActivityPaused(Activity activity) {
-                HyperCubeApplication.activity = null;
+                if(activity== HyperCubeApplication.activity)
+                    HyperCubeApplication.activity = null;
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
-                HyperCubeApplication.activity = null;
+                if(activity== HyperCubeApplication.activity)
+                    HyperCubeApplication.activity = null;
             }
 
             @Override
@@ -81,7 +83,8 @@ public class HyperCubeApplication  {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-                HyperCubeApplication.activity = null;
+                if(activity== HyperCubeApplication.activity)
+                    HyperCubeApplication.activity = null;
             }
         });
     }

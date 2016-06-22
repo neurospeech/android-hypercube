@@ -22,6 +22,9 @@ public class AppService extends com.neurospeech.hypercube.service.RestService  {
 
 
         api = createAPIClient("http://jsonplaceholder.typicode.com",API.class);
+
+
+        api = new MockAppServiceAPI();
     }
 
 
