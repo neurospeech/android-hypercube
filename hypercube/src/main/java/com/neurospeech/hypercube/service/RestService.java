@@ -20,6 +20,16 @@ public abstract class RestService {
     protected final Context context;
     protected final SharedPreferences preferences;
 
+    public JsonPreferences getJsonPreferences() {
+        return jsonPreferences;
+    }
+
+    public SharedPreferences getPreferences() {
+        return preferences;
+    }
+
+    protected final JsonPreferences jsonPreferences;
+
     public OkHttpClient getClient() {
         return client;
     }
@@ -35,6 +45,9 @@ public abstract class RestService {
 
         //cookieManagerProxy = new WebkitCookieManagerProxy();
         preferences = context.getSharedPreferences("App",Context.MODE_PRIVATE);
+
+        jsonPreferences = new JsonPreferences(preferences);
+
         //client.setCookieHandler(cookieManagerProxy);
     }
 

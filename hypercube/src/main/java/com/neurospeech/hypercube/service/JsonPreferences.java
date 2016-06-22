@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neurospeech.hypercube.HyperCubeApplication;
 
 public class JsonPreferences {
 
@@ -20,20 +21,29 @@ public class JsonPreferences {
     }
 
 
-    public void save(String key, Object value) throws  Exception{
-        if(value==null){
-            service.edit().remove(key).commit();
-            return;
+    public void save(String key, Object value){
+        try {
+            if (value == null) {
+                service.edit().remove(key).commit();
+                return;
+            }
+            String valueJson = objectMapper.writer().writeValueAsString(value);
+            service.edit().putString(key, valueJson).commit();
+        }catch (Exception ex){
+            HyperCubeApplication.current.logError(ex);
         }
-        String valueJson = objectMapper.writer().writeValueAsString(value);
-        service.edit().putString(key,valueJson).commit();
     }
 
-    public <T> T read(String key, TypeReference<T> typeReference) throws  Exception{
-        String value = service.getString(key, null);
-        if(value==null)
-            return null;
-        return objectMapper.reader(typeReference).readValue(value);
+    public <T> T read(String key, TypeReference<T> typeReference){
+        try {
+            String value = service.getString(key, null);
+            if (value == null)
+                return null;
+            return objectMapper.reader(typeReference).readValue(value);
+        }catch (Exception ex){
+            HyperCubeApplication.current.logError(ex);
+        }
+        return null;
     }
 
 }
