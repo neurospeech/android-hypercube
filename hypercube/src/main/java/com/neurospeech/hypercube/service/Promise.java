@@ -89,6 +89,9 @@ public class Promise<T> {
 
         View view = currentActivity.getWindow().getDecorView();
 
+        if(view==null)
+            return null;
+
         PopupWindow pw = creator.create(currentActivity);
         pw.showAtLocation(view, Gravity.LEFT | Gravity.TOP, view.getWidth() / 2 - 30, view.getHeight() / 2 - 30);
         return pw;
@@ -185,13 +188,26 @@ public class Promise<T> {
     PopupWindow busy = null;
 
     public void onStarted(){
+        if(!showProgress)
+            return;
         HyperCubeApplication.current.post(new Runnable() {
             @Override
             public void run() {
-                if (showProgress)
-                    busy = show();
+                busy = show();
+                if (busy == null) {
+                    // if activity window is not ready...
+                    // try again after sometime...
+                    // just once...
+                    HyperCubeApplication.current.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            busy = show();
+                        }
+                    }, 100);
+                }
             }
         });
+
     }
 
     public void onError(Exception error){
