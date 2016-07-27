@@ -8,6 +8,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 
+import java.util.HashMap;
+
 /**
  * Created by  on 12/4/2015.
  */
@@ -15,15 +17,39 @@ public class AnimatedCircleDrawable extends AnimationDrawable {
 
     private int bg;
     private int color;
+    private int size;
+
+    private static HashMap<String,CircleDrawable> cache =
+            new HashMap<>();
 
     public AnimatedCircleDrawable(int color, float strokeWidth, int bg, int size) {
         super();
 
         for(int i=0;i<36;i++){
-            addFrame(new CircleDrawable(i*10,color,strokeWidth,bg,size),10);
+
+            String key = String.valueOf(i*10) + String.valueOf(color) + String.valueOf(strokeWidth)
+                    + String.valueOf(bg) + String.valueOf(size);
+
+            CircleDrawable cd = cache.get(key);
+            if(cd==null){
+                cd = new CircleDrawable(i*10,color,strokeWidth,bg,size);
+                cache.put(key,cd);
+            }
+            addFrame(cd,10);
         }
+
+        this.size = size;
     }
 
+    @Override
+    public int getIntrinsicWidth() {
+        return size;
+    }
+
+    @Override
+    public int getIntrinsicHeight() {
+        return size;
+    }
 
     public static class CircleDrawable extends Drawable{
 
