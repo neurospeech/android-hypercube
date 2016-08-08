@@ -1,15 +1,26 @@
 package com.neurospeech.hypercubesample;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.neurospeech.hypercube.HyperCubeApplication;
 import com.neurospeech.hypercube.service.IResultListener;
 import com.neurospeech.hypercube.service.Promise;
+import com.neurospeech.hypercube.ui.AppArrayAdapter;
+import com.neurospeech.hypercube.ui.AtomRecyclerView;
+import com.neurospeech.hypercube.ui.HeaderedAdapter;
+import com.neurospeech.hypercubesample.model.MenuModel;
 
 public class MainActivity extends AppCompatActivity {
+
+    MenuAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,54 +28,58 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        HyperCubeApplication.current.post(new Runnable() {
-            @Override
-            public void run() {
-                runService();
-
-            }
-        },1000);
+        AtomRecyclerView recyclerView = (AtomRecyclerView) findViewById(R.id.headered_list);
 
 
-        findViewById(R.id.mainView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                runService();
-            }
-        });
+        adapter = new MenuAdapter(this);
+
+
+
+
+        recyclerView.setAdapter(adapter);
+
+
+
+
+
+
 
     }
 
-    private void runService() {
+    static class MenuAdapter extends HeaderedAdapter<MenuModel,MenuAdapter.ViewHolder> {
 
-        Toast.makeText(MainActivity.this,"Running Service",Toast.LENGTH_SHORT).show();
 
-        final AppService service = new AppService(this);
+        public MenuAdapter(Context context) {
+            super(context);
+        }
 
-        service.posts().then(new IResultListener<AppService.Post[]>() {
-            @Override
-            public void onResult(Promise<AppService.Post[]> promise) {
-                if(promise.getError()!=null){
-                    Toast.makeText(MainActivity.this,promise.getError(),Toast.LENGTH_SHORT).show();
-                }else{
-                    final AppService.Post first = promise.getResult()[0];
-                    first.body = "testing";
-                    service.put(first).then(new IResultListener<AppService.Post>() {
-                        @Override
-                        public void onResult(Promise<AppService.Post> promise) {
-                            if(promise.getError()!=null) {
-                                Toast.makeText(MainActivity.this, promise.getError(), Toast.LENGTH_SHORT).show();
-                            }else{
-                                if(first.body != promise.getResult().body){
-                                    Toast.makeText(MainActivity.this, "Not Saved", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(MainActivity.this, "Saved Successfully", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    });
-                }
+        @Override
+        public Object getHeader(MenuModel item) {
+            return item.header;
+        }
+
+        @Override
+        protected void onBindItem(ViewHolder holder, MenuModel item) {
+            holder.title.setText(item.name);
+        }
+
+        @Override
+        protected ViewHolder createViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.item_menu,parent,false);
+            return new ViewHolder(view);
+        }
+
+        static class ViewHolder extends RecyclerView.ViewHolder{
+
+            final TextView title;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+
+                title = (TextView)itemView.findViewById(R.id.title);
             }
-        });
+        }
+
     }
+
 }
