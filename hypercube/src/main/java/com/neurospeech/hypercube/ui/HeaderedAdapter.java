@@ -8,38 +8,71 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  *
  */
-public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder> extends AppArrayAdapter<T,RecyclerView.ViewHolder>{
+public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<HeaderOrItem<T>> allItems;
+    private final Context context;
+    private List<HeaderOrItem<T>> allItems = new ArrayList<HeaderOrItem<T>>();
+
+    private List<T> source;
 
     public HeaderedAdapter(Context context){
-        super(context);
+        this.context = context;
+        source = new ArrayList<>();
     }
 
     public HeaderedAdapter(Context context, List<T> source) {
-        super(context);
+        this.context = context;
 
-        this.addAll(source);
+        this.source = source;
 
-        /**
-         * This method is used to identify whether it is header or item and accordingly will regroup items based on header
-         * so finally source would contain
-         * H1
-         *  S1
-         *  S2
-         *  S3
-         * H2
-         *  S4
-         *  S5 and so on
-         */
         recreate();
     }
 
+    public void addAll(Collection<T> items) {
+        source.addAll(items);
+        recreate();
+    }
+
+    public void addAll(T ... items){
+        for(T item:items)
+            source.add(item);
+        recreate();
+    }
+
+    public void add(T item){
+        source.add(item);
+        recreate();
+    }
+
+    public void remove(T item){
+        source.remove(item);
+        recreate();
+    }
+
+    public void clear(){
+        source.clear();
+        recreate();
+    }
+
+    /**
+     * This method is used to identify whether it is header or item and accordingly will regroup items based on header
+     * so finally source would contain
+     * H1
+     *  S1
+     *  S2
+     *  S3
+     * H2
+     *  S4
+     *  S5 and so on
+     */
     protected void recreate() {
         /**
          * Clear existing items from HeaderOrItem
@@ -47,7 +80,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder> exte
         allItems.clear();
         Object last = null;
         int i =0;
-        for (T item : getItems()){
+        for (T item : source){
             Object header = getHeader(item);
             if (last == null || !last.equals(header)) {
                 allItems.add(new HeaderOrItem<T>(header,null,i));
@@ -57,6 +90,8 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder> exte
 
             last = header;
         }
+
+        notifyDataSetChanged();
 
     }
 
@@ -80,12 +115,16 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder> exte
         return allItems.size();
     }
 
+
+
     protected int getViewType(T item) {
         return 0;
     }
 
     @Override
-    protected final RecyclerView.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType < 0){
             return createHeaderViewHolder(inflater,parent,viewType);
         }
@@ -99,8 +138,12 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder> exte
             onBindHeader((VH)holder,item.header);
             return;
         }
-        onBind(holder,item.item);
+        onBind((VH)holder,item.item);
     }
+
+    protected abstract void onBind(VH holder,T item);
+
+
 
     /**
      *
@@ -115,7 +158,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder> exte
 
 
     protected RecyclerView.ViewHolder createHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-        TextView view = new TextView(getContext());
+        TextView view = new TextView(context);
         view.setPadding(5,5,5,5);
         return new HeaderViewHolder(view);
     }

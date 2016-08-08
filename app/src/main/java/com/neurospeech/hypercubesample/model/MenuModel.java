@@ -11,4 +11,10 @@ public class MenuModel {
 
     public int layout;
 
+    public MenuModel(String header, String name, int layout) {
+        super();
+        this.name = name;
+        this.header = header;
+        this.layout = layout;
+    }
 }

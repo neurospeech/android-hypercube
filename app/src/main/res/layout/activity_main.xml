@@ -10,10 +10,10 @@
     tools:context="com.neurospeech.hypercubesample.MainActivity"
     android:id="@+id/mainView">
 
-    <com.neurospeech.hypercube.ui.AtomRecyclerView
+    <com.neurospeech.hypercube.ui.HyperRecyclerView
         android:id="@+id/headered_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.neurospeech.hypercube.ui.AtomRecyclerView>
+    </com.neurospeech.hypercube.ui.HyperRecyclerView>
 
 </RelativeLayout>

@@ -13,16 +13,16 @@ import java.util.ArrayList;
 /**
  * Created by  on 08-08-2016.
  */
-public class AtomRecyclerView extends RecyclerView {
-    public AtomRecyclerView(Context context) {
+public class HyperRecyclerView extends RecyclerView {
+    public HyperRecyclerView(Context context) {
         super(context);
     }
 
-    public AtomRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public HyperRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public AtomRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public HyperRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -193,7 +193,8 @@ public class AtomRecyclerView extends RecyclerView {
 
             total = adapter.getItemCount();
 
-            return headerSize + total + footerSize;
+            int n =  headerSize + total + footerSize;
+            return n;
         }
 
         boolean isHeader(int position){
