@@ -36,6 +36,10 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         recreate();
     }
 
+    protected Context getContext(){
+        return context;
+    }
+
     public void addAll(Collection<T> items) {
         source.addAll(items);
         recreate();
@@ -82,9 +86,11 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         int i =0;
         for (T item : source){
             Object header = getHeader(item);
-            if (last == null || !last.equals(header)) {
-                allItems.add(new HeaderOrItem<T>(header,null,i));
+            if(header!=null) {
+                if (last == null || !last.equals(header)) {
+                    allItems.add(new HeaderOrItem<T>(header, null, i));
 
+                }
             }
             allItems.add(new HeaderOrItem<T>(null,item,i++));
 
