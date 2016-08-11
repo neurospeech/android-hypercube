@@ -5,16 +5,15 @@ package com.neurospeech.hypercubesample.model;
  */
 public class MenuModel {
 
+    private final Class activity;
     public String name;
 
     public String header;
 
-    public int layout;
-
-    public MenuModel(String header, String name, int layout) {
+    public MenuModel(String header, String name, Class activity) {
         super();
         this.name = name;
         this.header = header;
-        this.layout = layout;
+        this.activity = activity;
     }
 }
