@@ -81,12 +81,14 @@ public class HyperEditText extends EditText {
         }
     }
 
+    private boolean isTextValid = false;
     public void validate() {
         Object error = null;
         if(validator!=null){
             error = validator.invalidError(getText().toString());
         }
         if(error!=null){
+            isTextValid = false;
             String textError = null;
             if(error instanceof String || error instanceof CharSequence){
                 textError = error.toString();
@@ -94,7 +96,7 @@ public class HyperEditText extends EditText {
                 // seems integer...
                 if(error instanceof Integer){
                     Integer n = (Integer) error;
-                    if(n.intValue() == 0){
+                    if(n == 0){
                         textError = null;
                     }else{
                         textError = getContext().getResources().getString(n);
@@ -103,8 +105,14 @@ public class HyperEditText extends EditText {
             }
             setError(textError);
         }else{
+            isTextValid = true;
             setError(null);
         }
+    }
+
+    public boolean isValid(){
+        validate();
+        return isTextValid;
     }
 
     @Override
