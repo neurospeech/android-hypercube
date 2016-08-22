@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -66,6 +68,22 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         recreate();
     }
 
+
+    public Comparator<? super T> getComparator() {
+        return comparator;
+    }
+
+    /**
+     *
+     * @param comparator
+     * Here we need to just store the Comparator i.e. fields on which we have to sort
+     */
+    public void setComparator(Comparator<? super T> comparator) {
+        this.comparator = comparator;
+    }
+
+    private Comparator<? super T> comparator;
+
     /**
      * This method is used to identify whether it is header or item and accordingly will regroup items based on header
      * so finally source would contain
@@ -84,6 +102,14 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         allItems.clear();
         Object last = null;
         int i =0;
+
+        /**
+         * If comparator is set, then we sort the list before recreating it
+         */
+        if (comparator != null) {
+            Collections.sort(source,comparator);
+        }
+
         for (T item : source){
             Object header = getHeader(item);
             if(header!=null) {
