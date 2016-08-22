@@ -3,9 +3,12 @@ package com.neurospeech.hypercube;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -114,6 +117,45 @@ public class HyperCubeApplication  {
                 }
             }
         }, milliSecondsDelay);
+    }
+
+    public static void confirm(
+            Context context,
+            String title,
+            String message,
+            final DialogInterface.OnClickListener clickListener){
+        confirm(context,title,message,clickListener,null);
+    }
+
+
+    public static void confirm(
+            Context context,
+            String title,
+            String message,
+            final DialogInterface.OnClickListener clickListener,
+            final DialogInterface.OnCancelListener cancelListener){
+        AlertDialog.Builder builder
+                = new AlertDialog.Builder(context);
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clickListener.onClick(dialog,which);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(cancelListener!=null){
+                            cancelListener.onCancel(dialog);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.create().show();
     }
 
     public static String toString(Throwable ex){
