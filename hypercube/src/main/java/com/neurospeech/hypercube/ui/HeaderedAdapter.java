@@ -69,8 +69,8 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     }
 
 
-    public Comparator<? super T> getComparator() {
-        return comparator;
+    public Comparator<? super T> getSortComparator() {
+        return sortComparator;
     }
 
     /**
@@ -78,11 +78,11 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
      * @param comparator
      * Here we need to just store the Comparator i.e. fields on which we have to sort
      */
-    public void setComparator(Comparator<? super T> comparator) {
-        this.comparator = comparator;
+    public void setSortComparator(Comparator<? super T> comparator) {
+        this.sortComparator = comparator;
     }
 
-    private Comparator<? super T> comparator;
+    private Comparator<? super T> sortComparator;
 
     /**
      * This method is used to identify whether it is header or item and accordingly will regroup items based on header
@@ -104,10 +104,10 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         int i =0;
 
         /**
-         * If comparator is set, then we sort the list before recreating it
+         * If sortComparator is set, then we sort the list before recreating it
          */
-        if (comparator != null) {
-            Collections.sort(source,comparator);
+        if (sortComparator != null) {
+            Collections.sort(source, sortComparator);
         }
 
         for (T item : source){
