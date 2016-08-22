@@ -18,7 +18,7 @@
 	  
 
     dependencies {
-		   compile 'com.github.neurospeech:android-hypercube:v1.35'
+		   compile 'com.github.neurospeech:android-hypercube:v1.38'
 	  }
 
 

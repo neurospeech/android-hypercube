@@ -210,6 +210,30 @@ public class Promise<T> {
 
     }
 
+    /*
+    * 0 = Pending
+    * 1 = Complete
+    * -1 = Failed
+    * */
+    private int status = 0;
+
+
+    public T synchronousResult() throws Exception{
+        this.then(new IResultListener<T>() {
+            @Override
+            public void onResult(Promise<T> promise) {
+                this.notifyAll();
+            }
+        });
+
+        this.wait();
+
+        if(result!=null)
+            return result;
+
+        throw new Exception(error);
+    }
+
     public void onError(Exception error){
         String e = null;
         if(error != null) {

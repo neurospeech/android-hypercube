@@ -54,10 +54,15 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
                 }
 
                 @Override
-                public <R> Promise<R> adapt(Call<R> call) {
+                public <R> Promise<R> adapt(final Call<R> call) {
 
                     try {
-                        Promise<R> promise = new Promise<R>();
+                        Promise<R> promise = new Promise<R>(){
+                            @Override
+                            public R synchronousResult() throws Exception {
+                                return call.execute().body();
+                            }
+                        };
 
                         if(cachedConverter==null) {
                             cachedConverter = retrofit.responseBodyConverter(responseType, new Annotation[]{});
