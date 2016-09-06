@@ -179,7 +179,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
     protected void onBind(VH holder, T item) {
         if (holder instanceof HyperViewHolder) {
-            ((HyperViewHolder) holder).bindItem(item);
+            ((HyperViewHolder) holder).bindItem(this,item);
         }
     }
 

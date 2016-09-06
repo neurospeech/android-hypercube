@@ -9,12 +9,18 @@ import android.view.View;
 public abstract class HyperViewHolder<T> extends RecyclerView.ViewHolder {
 
 
+    public RecyclerView.Adapter getAdapter() {
+        return adapter;
+    }
+
+    private RecyclerView.Adapter adapter;
 
     public HyperViewHolder(View itemView) {
         super(itemView);
     }
 
-    public void bindItem(Object item){
+    public void bindItem(RecyclerView.Adapter adapter, Object item){
+        this.adapter = adapter;
         bind((T)item);
     }
 
