@@ -10,14 +10,50 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
+import com.neurospeech.hypercube.ui.HyperItemViewHolder;
+import com.neurospeech.hypercube.ui.HyperViewHolder;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 
 
 /**
  * Created by akash.kava on 21-03-2016.
  */
 public class HyperCubeApplication  {
+
+
+    /**
+     * We need to store layout from model and view holder from layout as we do not have this facility
+     * directly available in android, hence the below maps are created
+     *
+     * modelLayouts and layoutViewHolders are declared as static to improve performance
+     */
+    /**
+     * modelLayouts - stores the layout Id for given Model class
+     */
+    public static HashMap<Class,Integer> modelLayouts
+            = new HashMap<>();
+
+
+    /**
+     * layoutViewHolders - stores the ViewHolder class for given layout Id (viewType)
+     */
+    public static HashMap<Integer,Class> layoutViewHolders
+            = new HashMap<>();
+
+
+    public static void registerViewHolderType(Class<HyperViewHolder<?>> viewHolderClass){
+        HyperItemViewHolder ivh = (HyperItemViewHolder) viewHolderClass
+                .getAnnotation(HyperItemViewHolder.class);
+        modelLayouts.put(ivh.modelType(),ivh.value());
+        layoutViewHolders.put(ivh.value(),viewHolderClass);
+
+    }
+
+
+
 
     public void setLogger(AppLogger logger) {
         this.logger = logger;

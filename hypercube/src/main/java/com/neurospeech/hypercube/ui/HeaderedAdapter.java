@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.neurospeech.hypercube.HyperCubeApplication;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,14 +20,14 @@ import java.util.List;
  *
  */
 public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     private List<HeaderOrItem<T>> allItems = new ArrayList<HeaderOrItem<T>>();
 
     private List<T> source;
 
-    public HeaderedAdapter(Context context){
+    public HeaderedAdapter(Context context) {
         this.context = context;
         source = new ArrayList<>();
     }
@@ -38,7 +40,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         recreate();
     }
 
-    protected Context getContext(){
+    protected Context getContext() {
         return context;
     }
 
@@ -47,23 +49,23 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         recreate();
     }
 
-    public void addAll(T ... items){
-        for(T item:items)
+    public void addAll(T... items) {
+        for (T item : items)
             source.add(item);
         recreate();
     }
 
-    public void add(T item){
+    public void add(T item) {
         source.add(item);
         recreate();
     }
 
-    public void remove(T item){
+    public void remove(T item) {
         source.remove(item);
         recreate();
     }
 
-    public void clear(){
+    public void clear() {
         source.clear();
         recreate();
     }
@@ -74,9 +76,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     }
 
     /**
-     *
-     * @param comparator
-     * Here we need to just store the Comparator i.e. fields on which we have to sort
+     * @param comparator Here we need to just store the Comparator i.e. fields on which we have to sort
      */
     public void setSortComparator(Comparator<? super T> comparator) {
         this.sortComparator = comparator;
@@ -88,12 +88,12 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
      * This method is used to identify whether it is header or item and accordingly will regroup items based on header
      * so finally source would contain
      * H1
-     *  S1
-     *  S2
-     *  S3
+     * S1
+     * S2
+     * S3
      * H2
-     *  S4
-     *  S5 and so on
+     * S4
+     * S5 and so on
      */
     protected void recreate() {
         /**
@@ -101,7 +101,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
          */
         allItems.clear();
         Object last = null;
-        int i =0;
+        int i = 0;
 
         /**
          * If sortComparator is set, then we sort the list before recreating it
@@ -110,15 +110,15 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
             Collections.sort(source, sortComparator);
         }
 
-        for (T item : source){
+        for (T item : source) {
             Object header = getHeader(item);
-            if(header!=null) {
+            if (header != null) {
                 if (last == null || !last.equals(header)) {
                     allItems.add(new HeaderOrItem<T>(header, null, i));
 
                 }
             }
-            allItems.add(new HeaderOrItem<T>(null,item,i++));
+            allItems.add(new HeaderOrItem<T>(null, item, i++));
 
             last = header;
         }
@@ -128,7 +128,6 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     }
 
 
-
     public abstract Object getHeader(T item);
 
 
@@ -136,7 +135,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     public final int getItemViewType(int position) {
 
         HeaderOrItem<T> item = allItems.get(position);
-        if(item.header!=null){
+        if (item.header != null) {
             return getHeaderItemViewType(item.header);
         }
         return getViewType(item.item);
@@ -148,8 +147,13 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     }
 
 
-
     protected int getViewType(T item) {
+
+        Integer i = HyperCubeApplication.modelLayouts.get(item.getClass());
+        if (i != null) {
+            return i;
+        }
+
         return 0;
     }
 
@@ -157,45 +161,57 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType < 0){
-            return createHeaderViewHolder(inflater,parent,viewType);
+        if (viewType < 0) {
+            return createHeaderViewHolder(inflater, parent, viewType);
         }
-        return createViewHolder(inflater,parent, viewType);
+        return createViewHolder(inflater, parent, viewType);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         HeaderOrItem<T> item = allItems.get(position);
-        if(item.header!=null){
-            onBindHeader((VH)holder,item.header);
+        if (item.header != null) {
+            onBindHeader((VH) holder, item.header);
             return;
         }
-        onBind((VH)holder,item.item);
+        onBind((VH) holder, item.item);
     }
 
-    protected abstract void onBind(VH holder,T item);
-
+    protected void onBind(VH holder, T item) {
+        if (holder instanceof HyperViewHolder) {
+            ((HyperViewHolder) holder).bindItem(item);
+        }
+    }
 
 
     /**
-     *
      * @param holder
-     * @param header
-     * Header will automatically populated here, we need not override this one, we will override this only when header has to contain only letter letter of the text or something similar
+     * @param header Header will automatically populated here, we need not override this one, we will override this only when header has to contain only letter letter of the text or something similar
      */
     protected void onBindHeader(RecyclerView.ViewHolder holder, Object header) {
-        ((HeaderViewHolder)holder).header.setText(header.toString());
+        ((HeaderViewHolder) holder).header.setText(header.toString());
     }
-
 
 
     protected RecyclerView.ViewHolder createHeaderViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
         TextView view = new TextView(context);
-        view.setPadding(5,5,5,5);
+        view.setPadding(5, 5, 5, 5);
         return new HeaderViewHolder(view);
     }
 
-    protected abstract VH createViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType);
+    protected VH createViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType)
+    {
+        try {
+            Class c = HyperCubeApplication.layoutViewHolders.get(viewType);
+            if(c==null)
+                return null;
+            View view = inflater.inflate(viewType, parent, false);
+            return (VH)(c.getConstructor(View.class).newInstance(view));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     protected int getHeaderItemViewType(Object header) {
         return -1;

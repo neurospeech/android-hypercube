@@ -4,7 +4,10 @@ package com.neurospeech.hypercube.ui;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+
+import com.neurospeech.hypercube.HyperCubeApplication;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -167,6 +170,13 @@ public abstract class AppArrayAdapter<T,VH extends RecyclerView.ViewHolder>
     }
 
     protected int getItemViewType(T item){
+
+        Integer i = HyperCubeApplication.modelLayouts.get(item.getClass());
+        if(i!=null){
+            return i;
+        }
+
+
         return 0;
     }
 
@@ -175,7 +185,18 @@ public abstract class AppArrayAdapter<T,VH extends RecyclerView.ViewHolder>
         return onCreateViewHolder(inflater,parent,viewType);
     }
 
-    protected abstract VH onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType);
+    protected VH onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType){
+        try {
+            Class c = HyperCubeApplication.layoutViewHolders.get(viewType);
+            if(c==null)
+                return null;
+            View view = inflater.inflate(viewType, parent, false);
+            return (VH)(c.getConstructor(View.class).newInstance(view));
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
@@ -183,7 +204,11 @@ public abstract class AppArrayAdapter<T,VH extends RecyclerView.ViewHolder>
         onBind(holder,item);
     }
 
-    protected abstract void onBind(VH holder, T item) ;
+    protected void onBind(VH holder, T item) {
+        if(holder instanceof HyperViewHolder){
+            ((HyperViewHolder)holder).bindItem(item);
+        }
+    }
 
     @Override
     public int getItemCount() {
