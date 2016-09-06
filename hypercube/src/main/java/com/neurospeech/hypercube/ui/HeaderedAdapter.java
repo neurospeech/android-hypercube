@@ -40,7 +40,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         recreate();
     }
 
-    protected Context getContext() {
+    public Context getContext() {
         return context;
     }
 
