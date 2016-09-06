@@ -15,6 +15,8 @@ import com.neurospeech.hypercube.ui.HyperViewHolder;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 
@@ -44,10 +46,22 @@ public class HyperCubeApplication  {
             = new HashMap<>();
 
 
-    public static void registerViewHolderType(Class<HyperViewHolder<?>> viewHolderClass){
+    public static void registerViewHolderType(Class<? extends HyperViewHolder<?>> viewHolderClass){
         HyperItemViewHolder ivh = (HyperItemViewHolder) viewHolderClass
                 .getAnnotation(HyperItemViewHolder.class);
-        modelLayouts.put(ivh.modelType(),ivh.value());
+        if(ivh==null)
+            throw new IllegalArgumentException("HyperItemViewHolder annotation is missing on ViewHolder class");
+
+        // try to fetch modelType...
+
+        Class modelType = null;
+
+        Type t = viewHolderClass.getGenericSuperclass();
+
+        ParameterizedType pt = (ParameterizedType)t;
+        modelType = (Class)pt.getActualTypeArguments()[0];
+
+        modelLayouts.put(modelType,ivh.value());
         layoutViewHolders.put(ivh.value(),viewHolderClass);
 
     }

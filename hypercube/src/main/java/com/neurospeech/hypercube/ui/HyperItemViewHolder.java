@@ -11,5 +11,4 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HyperItemViewHolder {
     int value () ;
-    Class modelType();
 }

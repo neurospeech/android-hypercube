@@ -13,7 +13,7 @@ import com.neurospeech.hypercubesample.model.MenuModel;
  * Created by  on 13-08-2016.
  */
 public class NavigationListAdapter 
-        extends HeaderedAdapter<MenuModel,NavigationListAdapter.NavigationViewHolder> {
+        extends HeaderedAdapter<MenuModel,RecyclerView.ViewHolder> {
 
     public NavigationListAdapter(Context context) {
         super(context);
@@ -21,25 +21,8 @@ public class NavigationListAdapter
 
     @Override
     public Object getHeader(MenuModel item) {
-        return null;
+        return item.header;
     }
 
-    @Override
-    protected void onBind(NavigationViewHolder holder, MenuModel item) {
-
-    }
-
-    @Override
-    protected NavigationViewHolder createViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-        return null;
-    }
-
-    static class NavigationViewHolder extends RecyclerView.ViewHolder{
-
-
-        public NavigationViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
 
 }
