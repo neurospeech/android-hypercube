@@ -26,4 +26,6 @@ public abstract class HyperViewHolder<T> extends RecyclerView.ViewHolder {
 
     protected abstract void bind(T item);
 
+
+
 }

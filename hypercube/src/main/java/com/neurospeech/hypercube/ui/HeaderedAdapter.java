@@ -202,10 +202,13 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     protected VH createViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType)
     {
         try {
-            Class c = HyperCubeApplication.layoutViewHolders.get(viewType);
-            if(c==null)
+            HyperCubeApplication.ViewHolderInfo info =
+                    HyperCubeApplication.layoutViewHolders.get(viewType);
+            if(info==null)
                 return null;
-            View view = inflater.inflate(viewType, parent, false);
+
+            Class c = info.viewHolderClass;
+            View view = inflater.inflate(info.layoutId, parent, false);
             return (VH)(c.getConstructor(View.class).newInstance(view));
         }catch (Exception ex){
             ex.printStackTrace();

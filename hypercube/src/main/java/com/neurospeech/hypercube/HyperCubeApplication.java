@@ -42,7 +42,7 @@ public class HyperCubeApplication  {
     /**
      * layoutViewHolders - stores the ViewHolder class for given layout Id (viewType)
      */
-    public static HashMap<Integer,Class> layoutViewHolders
+    public static HashMap<Integer,ViewHolderInfo> layoutViewHolders
             = new HashMap<>();
 
 
@@ -61,8 +61,15 @@ public class HyperCubeApplication  {
         ParameterizedType pt = (ParameterizedType)t;
         modelType = (Class)pt.getActualTypeArguments()[0];
 
-        modelLayouts.put(modelType,ivh.value());
-        layoutViewHolders.put(ivh.value(),viewHolderClass);
+        int id = modelLayouts.size() + 1;
+
+        modelLayouts.put(modelType,id);
+
+        ViewHolderInfo info = new ViewHolderInfo();
+        info.layoutId = ivh.value();
+        info.viewHolderClass = viewHolderClass;
+
+        layoutViewHolders.put(id,info);
 
     }
 
@@ -240,5 +247,14 @@ public class HyperCubeApplication  {
     public void logError(Exception ex) {
         String error = toString(ex);
         logError(error);
+    }
+
+
+    public static class ViewHolderInfo{
+
+        public Class viewHolderClass;
+
+        public int layoutId;
+
     }
 }
