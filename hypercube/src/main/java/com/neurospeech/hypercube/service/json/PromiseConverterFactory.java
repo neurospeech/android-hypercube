@@ -58,10 +58,10 @@ public class PromiseConverterFactory extends CallAdapter.Factory {
 
                     try {
                         Promise<R> promise = new Promise<R>(){
-                            @Override
-                            public R synchronousResult() throws Exception {
-                                return call.execute().body();
-                            }
+//                            @Override
+//                            public R synchronousResult() throws Exception {
+//                                return call.execute().body();
+//                            }
                         };
 
                         if(cachedConverter==null) {
