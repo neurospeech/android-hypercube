@@ -23,6 +23,7 @@ import org.json.JSONTokener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -219,14 +220,17 @@ public class Promise<T> {
 
 
     public T synchronousResult() throws Exception{
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
         this.then(new IResultListener<T>() {
             @Override
             public void onResult(Promise<T> promise) {
-                this.notifyAll();
+                latch.countDown();
             }
         });
 
-        this.wait();
+        latch.await();
 
         if(result!=null)
             return result;
