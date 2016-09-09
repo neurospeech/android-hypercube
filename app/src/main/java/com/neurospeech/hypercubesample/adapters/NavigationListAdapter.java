@@ -12,7 +12,7 @@ import com.neurospeech.hypercubesample.model.MenuModel;
 /**
  * Created by  on 13-08-2016.
  */
-public class NavigationListAdapter 
+public abstract class NavigationListAdapter
         extends HeaderedAdapter<MenuModel,RecyclerView.ViewHolder> {
 
     public NavigationListAdapter(Context context) {
@@ -23,6 +23,10 @@ public class NavigationListAdapter
     public Object getHeader(MenuModel item) {
         return item.header;
     }
+
+
+    public abstract void onItemClick(MenuModel item);
+
 
 
 }

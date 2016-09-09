@@ -3,7 +3,7 @@ package com.neurospeech.hypercubesample;
 import android.app.Application;
 
 import com.neurospeech.hypercube.HyperCubeApplication;
-import com.neurospeech.hypercubesample.adapters.NavigationViewHolder;
+import com.neurospeech.hypercubesample.adapters.MenuViewHolder;
 
 /**
  * Created by akash.kava on 22-04-2016.
@@ -16,6 +16,6 @@ public class MainApplication extends Application {
 
         HyperCubeApplication.init(this);
 
-        HyperCubeApplication.registerViewHolderType(NavigationViewHolder.class);
+        HyperCubeApplication.registerViewHolderType(MenuViewHolder.class);
     }
 }

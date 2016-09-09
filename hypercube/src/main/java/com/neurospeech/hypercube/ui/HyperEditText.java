@@ -2,9 +2,11 @@ package com.neurospeech.hypercube.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
@@ -47,6 +49,9 @@ public class HyperEditText extends EditText {
         this.validateOnLostFocus = validateOnLostFocus;
         this.validateOnTextChange = validateOnTextChange;
     }
+
+
+
 
 
 
@@ -135,6 +140,68 @@ public class HyperEditText extends EditText {
             return;
         }
         super.setOnFocusChangeListener(l);
+    }
+
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        // check if we clicked on drawables to clear...
+
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+
+            Drawable[] cds = getCompoundDrawables();
+            for (int i = 0; i < 4; i++) {
+                Drawable cd = cds[i];
+                if (cd == null)
+                    continue;
+
+                int left = 0;
+                int right = getWidth();
+
+                switch (i){
+                    case 0:
+
+                        right = getPaddingLeft() + cd.getIntrinsicWidth();
+                        break;
+                    case 2:
+                        left = getWidth() - getPaddingRight() - cd.getIntrinsicWidth();
+                        break;
+                    default:
+                        break;
+                }
+
+                boolean tapped = x >= left && x <= right && y<= (getBottom()-getTop());
+                if(tapped ){
+                    onDrawableClick(i,cd,event);
+                }
+
+            }
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    protected void onDrawableClick(int i, Drawable cd, MotionEvent event) {
+        if(drawableClickListener!=null)
+            drawableClickListener.onClick(i,cd);
+    }
+
+    public OnDrawableClickListener getDrawableClickListener() {
+        return drawableClickListener;
+    }
+
+    public void setDrawableClickListener(OnDrawableClickListener drawableClickListener) {
+        this.drawableClickListener = drawableClickListener;
+    }
+
+    private OnDrawableClickListener drawableClickListener;
+
+    public interface OnDrawableClickListener{
+        void onClick(int position,Drawable drawable);
     }
 
     protected void interceptFocusChangeListener(final OnFocusChangeListener listener) {

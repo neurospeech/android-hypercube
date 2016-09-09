@@ -16,4 +16,13 @@ public class MenuModel {
         this.header = header;
         this.activity = activity;
     }
+
+    public Object newInstance(){
+        try {
+            return activity.newInstance();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
 }

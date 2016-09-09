@@ -1,14 +1,17 @@
 package com.neurospeech.hypercubesample;
 
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,19 +45,33 @@ public class MainActivity extends AppCompatActivity {
     private View navigationView;
     RecyclerView  leftDrawer;
     FrameLayout frameLayout;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
         /**
          * Initializing Drawer layout
          */
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
         drawerLayout.setScrimColor(ContextCompat.getColor(getApplicationContext(), R.color.white_transparent));
 
-        navigationListAdapter = new NavigationListAdapter(this);
+        navigationListAdapter = new NavigationListAdapter(this){
+            @Override
+            public void onItemClick(MenuModel item) {
+                onMenuClicked(item);
+            }
+        };
 
         /**
          * Initializing NavigationView
@@ -62,6 +79,32 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView = LayoutInflater.from(this).inflate(R.layout.navigation_drawer,drawerLayout,false);
         drawerLayout.addView(navigationView);
+
+
+
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.app_name, R.string.app_name){
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+                super.onDrawerClosed(drawerView);
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+                //getFragmentManager().popBackStackImmediate();
+                super.onDrawerOpened(drawerView);
+
+            }
+        };
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        actionBarDrawerToggle.syncState();
+
         leftDrawer=(RecyclerView) navigationView.findViewById(R.id.left_drawer);
 
         loadItems();
@@ -84,6 +127,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
+
+    }
+
+    private void onMenuClicked(MenuModel item) {
+        fragmentTransaction((Fragment) item.newInstance());
+        drawerLayout.closeDrawers();
+    }
 
 
     /**
@@ -97,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransactions.replace(R.id.fragment_container,fragment);
         fragmentTransactions.addToBackStack(null);
         fragmentTransactions.commit();
-        drawerLayout.closeDrawer(navigationView);
+        //drawerLayout.closeDrawer(navigationView);
     }
 
     @Override
