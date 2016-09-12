@@ -217,9 +217,13 @@ public class HyperEditText extends EditText {
                 if(v == HyperEditText.this && !hasFocus) {
                     validate();
                 }
+
+
             }
         });
     }
+
+
 
     public boolean isValidateOnTextChange() {
         return validateOnTextChange;
@@ -239,6 +243,9 @@ public class HyperEditText extends EditText {
 
     private boolean validateOnTextChange;
     private boolean validateOnLostFocus;
+
+
+
 
 
 

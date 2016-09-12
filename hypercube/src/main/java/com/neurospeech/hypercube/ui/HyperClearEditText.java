@@ -2,6 +2,7 @@ package com.neurospeech.hypercube.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,9 +36,20 @@ public class HyperClearEditText extends HyperEditText {
         init();
     }
 
+    public int getClearDrawable() {
+        return clearDrawable;
+    }
+
+    public void setClearDrawable(int clearDrawable) {
+        this.clearDrawable = clearDrawable;
+    }
+
+    private int clearDrawable;
+
     private void init() {
+        setPadding(getPaddingLeft(),getPaddingTop(),getPaddingRight()*5,getPaddingBottom());
 
-
+        setClearDrawable(android.R.drawable.ic_delete);
 
         addTextChangedListener(new TextWatcher() {
             @Override
@@ -47,11 +59,7 @@ public class HyperClearEditText extends HyperEditText {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length()==0){
-                    setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-                }else{
-                    setCompoundDrawablesWithIntrinsicBounds(0,0, android.R.drawable.ic_delete ,0);
-                }
+                refreshUI();
             }
 
             @Override
@@ -60,9 +68,28 @@ public class HyperClearEditText extends HyperEditText {
             }
         });
 
-        setPadding(getPaddingLeft(),getPaddingTop(),getPaddingRight()*5,getPaddingBottom());
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+
+        if(focused){
+            refreshUI();
+        }else{
+            setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        }
 
     }
+
+    private void refreshUI() {
+        if(getText().length()>0){
+            setCompoundDrawablesWithIntrinsicBounds(0,0,clearDrawable,0);
+        }else{
+            setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        }
+    }
+
 
     @Override
     protected void onDrawableClick(int i, Drawable cd, MotionEvent event) {
@@ -73,4 +100,7 @@ public class HyperClearEditText extends HyperEditText {
             setText("");
         }
     }
+
+
+
 }
