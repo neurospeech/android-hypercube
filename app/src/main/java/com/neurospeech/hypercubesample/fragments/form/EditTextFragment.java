@@ -33,6 +33,9 @@ public class EditTextFragment extends Fragment {
         editText = (HyperEditText)view.findViewById(R.id.edit_validate_on_lost_focus);
         editText.setValidator(true,false,tv);
 
+        editText.setText("1000");
+
+
 
         editText = (HyperEditText)view.findViewById(R.id.edit_validate_on_typing);
         editText.setValidator(true,true,tv);

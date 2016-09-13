@@ -2,6 +2,7 @@ package com.neurospeech.hypercube.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -62,9 +63,9 @@ public class HyperEditText extends EditText {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if(validateOnLostFocus){
-            interceptFocusChangeListener(null);
-        }
+//        if(validateOnLostFocus){
+//            interceptFocusChangeListener(null);
+//        }
         if(validateOnTextChange){
             textWatcher = new TextWatcher() {
                 @Override
@@ -84,6 +85,29 @@ public class HyperEditText extends EditText {
             };
             addTextChangedListener(textWatcher);
         }
+    }
+
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+
+        if(focused){
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int pos = getText().length();
+                    setSelection(pos);
+
+                }
+            },10);
+        }
+        else{
+            if(validateOnLostFocus){
+                validate();
+            }
+        }
+
     }
 
     private boolean isTextValid = false;
@@ -123,24 +147,24 @@ public class HyperEditText extends EditText {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        OnFocusChangeListener f = getOnFocusChangeListener();
-        if(f instanceof InterceptedFocusChangeListener){
-            InterceptedFocusChangeListener ifl = (InterceptedFocusChangeListener)f;
-            setOnFocusChangeListener(ifl.previous);
-        }
+//        OnFocusChangeListener f = getOnFocusChangeListener();
+//        if(f instanceof InterceptedFocusChangeListener){
+//            InterceptedFocusChangeListener ifl = (InterceptedFocusChangeListener)f;
+//            setOnFocusChangeListener(ifl.previous);
+//        }
         if(textWatcher!=null){
             removeTextChangedListener(textWatcher);
         }
     }
 
-    @Override
-    public void setOnFocusChangeListener(OnFocusChangeListener l) {
-        if(validateOnLostFocus){
-            interceptFocusChangeListener(l);
-            return;
-        }
-        super.setOnFocusChangeListener(l);
-    }
+//    @Override
+//    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+//        if(validateOnLostFocus){
+//            interceptFocusChangeListener(l);
+//            return;
+//        }
+//        super.setOnFocusChangeListener(l);
+//    }
 
 
 
@@ -204,24 +228,24 @@ public class HyperEditText extends EditText {
         void onClick(int position,Drawable drawable);
     }
 
-    protected void interceptFocusChangeListener(final OnFocusChangeListener listener) {
-        super.setOnFocusChangeListener(new InterceptedFocusChangeListener(getOnFocusChangeListener()){
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                super.onFocusChange(v, hasFocus);
-
-                if(listener!=null){
-                    listener.onFocusChange(v,hasFocus);
-                }
-
-                if(v == HyperEditText.this && !hasFocus) {
-                    validate();
-                }
-
-
-            }
-        });
-    }
+//    protected void interceptFocusChangeListener(final OnFocusChangeListener listener) {
+//        super.setOnFocusChangeListener(new InterceptedFocusChangeListener(getOnFocusChangeListener()){
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                super.onFocusChange(v, hasFocus);
+//
+//                if(listener!=null){
+//                    listener.onFocusChange(v,hasFocus);
+//                }
+//
+//                if(v == HyperEditText.this && !hasFocus) {
+//                    validate();
+//                }
+//
+//
+//            }
+//        });
+//    }
 
 
 

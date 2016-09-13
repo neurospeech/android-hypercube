@@ -59,7 +59,9 @@ public class HyperClearEditText extends HyperEditText {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                refreshUI();
+                if(isFocused()) {
+                    refreshUI();
+                }
             }
 
             @Override
