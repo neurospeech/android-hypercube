@@ -232,10 +232,9 @@ public class Promise<T> {
 
         latch.await();
 
-        if(result!=null)
-            return result;
-
-        throw new Exception(error);
+        if(error!=null)
+            throw new Exception(error);
+        return result;
     }
 
     public void onError(Exception error){
