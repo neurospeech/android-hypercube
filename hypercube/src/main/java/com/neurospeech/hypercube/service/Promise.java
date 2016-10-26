@@ -17,6 +17,7 @@ import com.neurospeech.hypercube.service.json.PromiseConverterFactory;
 import com.neurospeech.hypercube.service.json.StringConverter;
 import com.neurospeech.hypercube.ui.AnimatedCircleDrawable;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -268,6 +269,22 @@ public class Promise<T> {
                     errorJson = (JSONObject) tokener.nextValue();
                     if (errorJson.has("message")) {
                         this.error = errorJson.optString("message");
+                    }else if (errorJson.has("messages")){
+                        JSONArray messages = errorJson.getJSONArray("messages");
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0;i<messages.length();i++){
+                            JSONObject m = messages.optJSONObject(i);
+                            if(m==null){
+                                sb.append(messages.optString(i));
+                            }else{
+                                if (m.has("error")) {
+                                    sb.append(m.optString("error") + " ");
+                                }else if(m.has("message")){
+                                    sb.append(m.optString("message") + " ");
+                                }
+                            }
+                        }
+                        this.error = sb.toString();
                     }else if (errorJson.has("error")) {
                         this.error = errorJson.optString("error");
                     }else if (errorJson.has("errors")) {
