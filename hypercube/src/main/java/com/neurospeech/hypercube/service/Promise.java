@@ -268,7 +268,12 @@ public class Promise<T> {
                     JSONTokener tokener = new JSONTokener(error);
                     errorJson = (JSONObject) tokener.nextValue();
                     if (errorJson.has("message")) {
-                        this.error = errorJson.optString("message");
+                        Object oe = errorJson.opt("message");
+                        if(oe.getClass().equals(String.class)) {
+                            this.error = oe.toString();
+                        }else{
+                            this.error = "Conflict error";
+                        }
                     }else if (errorJson.has("messages")){
                         JSONArray messages = errorJson.getJSONArray("messages");
                         StringBuilder sb = new StringBuilder();
