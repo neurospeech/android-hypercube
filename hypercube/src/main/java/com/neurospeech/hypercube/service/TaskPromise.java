@@ -17,14 +17,14 @@ public class TaskPromise {
         final Promise<RT> promise = new Promise<>();
         (new AsyncTask<IFunction<T,RT>,Integer,RT>(){
 
-            private String lastError = null;
+            private Exception lastException = null;
 
             @Override
             protected RT doInBackground(IFunction<T,RT>... params) {
                 try {
                     return params[0].run(input);
                 }catch (Exception ex){
-                    lastError = HyperCubeApplication.toString(ex);
+                    lastException = ex;
                 }
                 return null;
             }
@@ -33,9 +33,9 @@ public class TaskPromise {
             protected void onPostExecute(RT rt) {
                 super.onPostExecute(rt);
 
-                promise.onResult(rt, lastError);
-                if(lastError!=null){
-                    Log.e("Error",lastError);
+                promise.onResult(rt, lastException.getMessage());
+                if(lastException!=null){
+                    Log.e("Error",HyperCubeApplication.toString(lastException));
                 }
             }
         }).execute(converter);
