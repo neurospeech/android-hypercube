@@ -33,7 +33,7 @@ public class TaskPromise {
             protected void onPostExecute(RT rt) {
                 super.onPostExecute(rt);
 
-                promise.onResult(rt, lastException.getMessage());
+                promise.onResult(rt, lastException == null ? null : lastException.getMessage());
                 if(lastException!=null){
                     Log.e("Error",HyperCubeApplication.toString(lastException));
                 }
