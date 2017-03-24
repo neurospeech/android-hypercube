@@ -64,6 +64,21 @@ public abstract class AppArrayAdapter<T,VH extends RecyclerView.ViewHolder>
         onNotifyItemRangeInserted(start, size);
     }
 
+    public void replace(Collection<T> all){
+        items.clear();
+        items.addAll(all);
+        notifyDataSetChanged();
+    }
+
+    public void replace(T... all){
+        items.clear();
+        for(T item:all) {
+            items.add(item);
+        }
+        notifyDataSetChanged();
+    }
+
+
     protected void onNotifyItemRangeInserted(int start, int size) {
         notifyItemRangeInserted(start, size);
     }

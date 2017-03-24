@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -42,6 +43,20 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
     public Context getContext() {
         return context;
+    }
+
+    public void replace(Collection<T> items){
+        source.clear();
+        source.addAll(items);
+        recreate();
+    }
+
+    public void replace(T... items){
+        source.clear();
+        for(T item:items) {
+            source.add(item);
+        }
+        recreate();
     }
 
     public void addAll(Collection<T> items) {
@@ -109,6 +124,9 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         if (sortComparator != null) {
             Collections.sort(source, sortComparator);
         }
+
+
+
 
         for (T item : source) {
             Object header = getHeader(item);
@@ -263,6 +281,8 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         }
 
         T item;
+
+
 
     }
 
