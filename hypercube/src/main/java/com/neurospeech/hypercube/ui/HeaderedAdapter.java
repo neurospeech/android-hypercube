@@ -9,11 +9,17 @@ import android.widget.TextView;
 
 
 import com.neurospeech.hypercube.HyperCubeApplication;
+import com.neurospeech.hypercube.service.IFunction;
+import com.neurospeech.hypercube.service.IResultListener;
+import com.neurospeech.hypercube.service.Promise;
+import com.neurospeech.hypercube.service.TaskPromise;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -99,6 +105,15 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
     private Comparator<? super T> sortComparator;
 
+
+    private Comparator<Object> headerSortComparator;
+    public void setHeaderSortComparator(Comparator<Object> headerSortComparator){
+        this.headerSortComparator = headerSortComparator;
+    }
+
+
+    private int version = 0;
+
     /**
      * This method is used to identify whether it is header or item and accordingly will regroup items based on header
      * so finally source would contain
@@ -111,38 +126,84 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
      * S5 and so on
      */
     protected void recreate() {
+
+        final int v = ++version;
+
+        List<T> copy = new ArrayList<>(source);
+
+        TaskPromise.runAsync(copy, new IFunction<List<T>, List<HeaderOrItem<T>>>() {
+            @Override
+            public List<HeaderOrItem<T>> run(List<T> c) throws Exception {
+                if(v != version)
+                    return null;
+
+                return recreateAsync(c);
+            }
+        }).then(new IResultListener<List<HeaderOrItem<T>>>() {
+            @Override
+            public void onResult(Promise<List<HeaderOrItem<T>>> promise) {
+                if(v != version)
+                    return;
+
+                List<HeaderOrItem<T>> a = promise.getResult();
+                if(a==null)
+                    return;
+
+                allItems = a;
+                notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    private List<HeaderOrItem<T>> recreateAsync(List<T> copy) {
         /**
          * Clear existing items from HeaderOrItem
          */
-        allItems.clear();
-        Object last = null;
-        int i = 0;
+        List<HeaderOrItem<T>> all = new ArrayList<>();
 
         /**
          * If sortComparator is set, then we sort the list before recreating it
          */
         if (sortComparator != null) {
-            Collections.sort(source, sortComparator);
+            Collections.sort(copy, sortComparator);
         }
 
 
+        List<HeaderItems<T>> groups = new ArrayList<>();
+        HashMap<Object,HeaderItems<T>> cache = new HashMap<>();
 
 
-        for (T item : source) {
+        for (T item : copy) {
             Object header = getHeader(item);
-            if (header != null) {
-                if (last == null || !last.equals(header)) {
-                    allItems.add(new HeaderOrItem<T>(header, null, i));
-
-                }
+            HeaderItems<T> hitems = cache.get(header);
+            if(hitems==null){
+                hitems = new HeaderItems<>();
+                hitems.header = header;
+                cache.put(header,hitems);
+                groups.add(hitems);
             }
-            allItems.add(new HeaderOrItem<T>(null, item, i++));
-
-            last = header;
+            hitems.items.add(item);
         }
 
-        notifyDataSetChanged();
+        if(headerSortComparator != null){
+            Collections.sort(groups, new Comparator<HeaderItems<T>>() {
+                @Override
+                public int compare(HeaderItems<T> hi1, HeaderItems<T> hi2) {
+                    return headerSortComparator.compare(hi1.header,hi2.header);
+                }
+            });
+        }
 
+        int i = 0;
+        for(HeaderItems<T> hitem: groups){
+            all.add(new HeaderOrItem<T>(hitem.header,null,i++));
+            for(T item : hitem.items){
+                all.add(new HeaderOrItem<T>(null,item,i++));
+            }
+        }
+
+        return  all;
     }
 
 
@@ -286,5 +347,9 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
     }
 
+    public static class HeaderItems<T>{
+        public Object header;
+        public List<T> items = new ArrayList<T>();
+    }
 
 }
