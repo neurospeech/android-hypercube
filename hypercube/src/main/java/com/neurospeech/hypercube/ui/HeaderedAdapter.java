@@ -127,7 +127,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
      */
     protected void recreate() {
 
-        final int v = ++version;
+        /*final int v = ++version;
 
         List<T> copy = new ArrayList<>(source);
 
@@ -152,7 +152,9 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
                 allItems = a;
                 notifyDataSetChanged();
             }
-        });
+        });*/
+
+        allItems = recreateAsync(source);
 
     }
 
