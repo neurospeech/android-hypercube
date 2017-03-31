@@ -176,6 +176,12 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
          */
         List<HeaderOrItem<T>> all = new ArrayList<>();
 
+        /**
+         * If sortComparator is set, then we sort the list before recreating it
+         */
+        if (sortComparator != null) {
+            Collections.sort(copy, sortComparator);
+        }
 
         if(!showHeaders){
             int i = 0;
@@ -184,14 +190,6 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
             }
             return all;
         }
-
-        /**
-         * If sortComparator is set, then we sort the list before recreating it
-         */
-        if (sortComparator != null) {
-            Collections.sort(copy, sortComparator);
-        }
-
 
         List<HeaderItems<T>> groups = new ArrayList<>();
         HashMap<Object,HeaderItems<T>> cache = new HashMap<>();
