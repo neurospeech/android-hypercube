@@ -155,7 +155,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         });*/
 
         allItems = recreateAsync(source);
-
+        notifyDataSetChanged();
     }
 
     private List<HeaderOrItem<T>> recreateAsync(List<T> copy) {
