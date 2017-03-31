@@ -44,9 +44,12 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public HeaderedAdapter(Context context) {
-        this.context = context;
-        source = new ArrayList<>();
+    public HeaderedAdapter(Context context){
+        this(context,true);
+    }
+
+    public HeaderedAdapter(Context context, boolean showHeaders) {
+        this(context,new ArrayList<T>(),showHeaders);
     }
 
     public HeaderedAdapter(Context context, List<T> source) {
@@ -57,8 +60,9 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         this.context = context;
         this.showHeaders = showHeaders;
         this.source = source;
-
-        recreate();
+        if(source!=null && source.size()>0) {
+            recreate();
+        }
     }
 
     public Context getContext() {
