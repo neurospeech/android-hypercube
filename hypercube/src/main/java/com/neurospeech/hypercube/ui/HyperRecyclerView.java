@@ -225,6 +225,7 @@ public class HyperRecyclerView extends RecyclerView {
                 return HEADER_FOOTER_ITEM_TYPE;
             }catch (Exception ex){
                 Log.e("Hyper Recycler View", ex.getLocalizedMessage());
+                Log.e("Hyper Recycler View", "Failed for position " + position);
                 ex.printStackTrace();
             }
             return -1;
