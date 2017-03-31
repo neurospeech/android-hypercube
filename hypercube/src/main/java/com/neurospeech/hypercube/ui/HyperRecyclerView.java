@@ -149,6 +149,7 @@ public class HyperRecyclerView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            int headerSize = getHeaderSize();
             if(isHeader(position)){
                 HeaderFooterViewHolder hfvh = (HeaderFooterViewHolder)holder;
                 hfvh.layout.removeAllViews();
@@ -173,40 +174,41 @@ public class HyperRecyclerView extends RecyclerView {
             adapter.onBindViewHolder(holder,position-headerSize);
         }
 
-        private int headerSize = 0;
-        private int footerSize = 0;
+        //private int headerSize = 0;
+        //private int footerSize = 0;
+
+        private int getHeaderSize(){
+            return headers == null ? 0 : headers.size();
+        }
+
+        private int getFooterSize(){
+            return footers == null ? 0 : footers.size();
+        }
+
+
         private int total = 0;
 
         @Override
         public int getItemCount() {
 
-
-            if(headers!=null){
-                headerSize = headers.size();
-            }else{
-                headerSize = 0;
-            }
-            if(footers!=null){
-                footerSize = footers.size();
-            }else{
-                footerSize = 0;
-            }
-
             total = adapter.getItemCount();
 
-            int n =  headerSize + total + footerSize;
+            int n =  getHeaderSize() + total + getFooterSize();
             return n;
         }
 
         boolean isHeader(int position){
+            int headerSize = getHeaderSize();
             if(headerSize==0)
                 return false;
             return position < headerSize;
         }
 
         boolean isFooter(int position){
+            int footerSize = getFooterSize();
             if(footerSize==0)
                 return false;
+            int headerSize = getHeaderSize();
             return  position >= headerSize + total;
         }
 
@@ -215,20 +217,22 @@ public class HyperRecyclerView extends RecyclerView {
             try {
                 if (isHeader(position))
                     return HEADER_FOOTER_ITEM_TYPE;
-                if (!isFooter(position)) {
-                    int type = adapter.getItemViewType(position - headerSize);
-                    if (type == HEADER_FOOTER_ITEM_TYPE) {
-                        throw new IllegalArgumentException("getItemViewType must not be equal to Integer.MIN_VALUE");
-                    }
-                    return type;
+
+                if(isFooter(position))
+                    return HEADER_FOOTER_ITEM_TYPE;
+
+                int headerSize = getHeaderSize();
+                int type = adapter.getItemViewType(position - headerSize);
+                if (type == HEADER_FOOTER_ITEM_TYPE) {
+                    throw new IllegalArgumentException("getItemViewType must not be equal to Integer.MIN_VALUE");
                 }
-                return HEADER_FOOTER_ITEM_TYPE;
+                return type;
             }catch (Exception ex){
                 Log.e("Hyper Recycler View", ex.getLocalizedMessage());
                 Log.e("Hyper Recycler View", "Failed for position " + position);
                 ex.printStackTrace();
+                throw new RuntimeException("Failed", ex);
             }
-            return -1;
         }
 
         public void dispose(){
