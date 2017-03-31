@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -211,16 +212,22 @@ public class HyperRecyclerView extends RecyclerView {
 
         @Override
         public int getItemViewType(int position) {
-            if(isHeader(position))
-                return HEADER_FOOTER_ITEM_TYPE;
-            if(!isFooter(position)) {
-                int type = adapter.getItemViewType(position - headerSize);
-                if(type==HEADER_FOOTER_ITEM_TYPE){
-                    throw new IllegalArgumentException("getItemViewType must not be equal to Integer.MIN_VALUE");
+            try {
+                if (isHeader(position))
+                    return HEADER_FOOTER_ITEM_TYPE;
+                if (!isFooter(position)) {
+                    int type = adapter.getItemViewType(position - headerSize);
+                    if (type == HEADER_FOOTER_ITEM_TYPE) {
+                        throw new IllegalArgumentException("getItemViewType must not be equal to Integer.MIN_VALUE");
+                    }
+                    return type;
                 }
-                return type;
+                return HEADER_FOOTER_ITEM_TYPE;
+            }catch (Exception ex){
+                Log.e("Hyper Recycler View", ex.getLocalizedMessage());
+                ex.printStackTrace();
             }
-            return HEADER_FOOTER_ITEM_TYPE;
+            return -1;
         }
 
         public void dispose(){
