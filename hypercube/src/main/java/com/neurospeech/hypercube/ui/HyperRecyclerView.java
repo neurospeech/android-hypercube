@@ -229,7 +229,7 @@ public class HyperRecyclerView extends RecyclerView {
                 return type;
             }catch (Exception ex){
                 Log.e("Hyper Recycler View", ex.getLocalizedMessage());
-                Log.e("Hyper Recycler View", "Failed for position " + position);
+                Log.e("Hyper Recycler View", "Failed for position " + position + " with footers " + getFooterSize() + " with total " + getItemCount());
                 ex.printStackTrace();
                 throw new RuntimeException("Failed", ex);
             }
