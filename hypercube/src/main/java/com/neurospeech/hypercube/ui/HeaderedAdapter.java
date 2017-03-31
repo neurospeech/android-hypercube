@@ -34,14 +34,28 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
     private List<T> source;
 
+    private boolean showHeaders = true;
+    public boolean canShowHeaders(){
+        return showHeaders;
+    }
+
+    public void setShowHeaders(boolean v){
+        showHeaders = v;
+        notifyDataSetChanged();
+    }
+
     public HeaderedAdapter(Context context) {
         this.context = context;
         source = new ArrayList<>();
     }
 
     public HeaderedAdapter(Context context, List<T> source) {
-        this.context = context;
+        this(context,source,true);
+    }
 
+    public HeaderedAdapter(Context context, List<T> source, boolean showHeaders) {
+        this.context = context;
+        this.showHeaders = showHeaders;
         this.source = source;
 
         recreate();
@@ -127,7 +141,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
      */
     protected void recreate() {
 
-        /*final int v = ++version;
+        final int v = ++version;
 
         List<T> copy = new ArrayList<>(source);
 
@@ -152,10 +166,8 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
                 allItems = a;
                 notifyDataSetChanged();
             }
-        });*/
+        });
 
-        allItems = recreateAsync(source);
-        notifyDataSetChanged();
     }
 
     private List<HeaderOrItem<T>> recreateAsync(List<T> copy) {
@@ -163,6 +175,15 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
          * Clear existing items from HeaderOrItem
          */
         List<HeaderOrItem<T>> all = new ArrayList<>();
+
+
+        if(!showHeaders){
+            int i = 0;
+            for(T item: copy){
+                all.add(new HeaderOrItem<T>(null,item,i++));
+            }
+            return all;
+        }
 
         /**
          * If sortComparator is set, then we sort the list before recreating it
@@ -178,6 +199,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
         for (T item : copy) {
             Object header = getHeader(item);
+
             HeaderItems<T> hitems = cache.get(header);
             if(hitems==null){
                 hitems = new HeaderItems<>();
@@ -187,6 +209,8 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
             }
             hitems.items.add(item);
         }
+
+
 
         if(headerSortComparator != null){
             Collections.sort(groups, new Comparator<HeaderItems<T>>() {
