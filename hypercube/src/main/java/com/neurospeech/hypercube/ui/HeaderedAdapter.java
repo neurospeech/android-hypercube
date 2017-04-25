@@ -29,6 +29,11 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     private final Context context;
     private List<HeaderOrItem<T>> allItems = new ArrayList<HeaderOrItem<T>>();
 
+
+    public  List<HeaderOrItem<T>> getAllItems() {
+        return allItems;
+    }
+
     private List<T> source;
 
     public ModelFilter<T> getFilter() {
