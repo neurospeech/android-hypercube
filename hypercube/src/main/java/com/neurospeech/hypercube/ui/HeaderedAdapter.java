@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.neurospeech.hypercube.HyperCubeApplication;
 import com.neurospeech.hypercube.service.IFunction;
 import com.neurospeech.hypercube.service.IResultListener;
@@ -18,10 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  *
@@ -33,6 +30,17 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     private List<HeaderOrItem<T>> allItems = new ArrayList<HeaderOrItem<T>>();
 
     private List<T> source;
+
+    public ModelFilter<T> getFilter() {
+        return filter;
+    }
+
+    public void setFilter(ModelFilter<T> filter) {
+        this.filter = filter;
+        recreate();
+    }
+
+    private ModelFilter<T> filter;
 
     private boolean showHeaders = true;
     public boolean canShowHeaders(){
@@ -179,6 +187,16 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
          * Clear existing items from HeaderOrItem
          */
         List<HeaderOrItem<T>> all = new ArrayList<>();
+
+        if(filter!=null){
+            List<T> f = new ArrayList<>(copy.size());
+            for(T item : copy) {
+                if(filter.filter(item)) {
+                    f.add(item);
+                }
+            }
+            copy = f;
+        }
 
         /**
          * If sortComparator is set, then we sort the list before recreating it
