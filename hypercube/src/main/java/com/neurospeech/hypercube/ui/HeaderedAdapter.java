@@ -181,6 +181,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
                     return;
 
                 allItems = a;
+                lastVisiblePosition = -1;
                 notifyDataSetChanged();
             }
         });
@@ -297,6 +298,8 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
         return createViewHolder(inflater, parent, viewType);
     }
 
+    private int lastVisiblePosition = 0;
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         HeaderOrItem<T> item = allItems.get(position);
@@ -305,6 +308,23 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
             return;
         }
         onBind((VH) holder, item.item);
+
+
+        if(position == allItems.size() - 1){
+            if(lastVisiblePosition != position){
+                lastVisiblePosition = position;
+                HyperCubeApplication.current.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onOverScrolled();
+                    }
+                });
+            }
+        }
+    }
+
+    protected void onOverScrolled() {
+
     }
 
     protected void onBind(VH holder, T item) {
