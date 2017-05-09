@@ -3,10 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-hypercube.iml" filepath="$PROJECT_DIR$/android-hypercube.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-hypercube.iml" filepath="$PROJECT_DIR$/android-hypercube.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hypercube/hypercube.iml" filepath="$PROJECT_DIR$/hypercube/hypercube.iml" />
       <module fileurl="file://$PROJECT_DIR$/hypercube/hypercube.iml" filepath="$PROJECT_DIR$/hypercube/hypercube.iml" />
     </modules>
   </component>

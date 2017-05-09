@@ -30,8 +30,18 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
     private List<HeaderOrItem<T>> allItems = new ArrayList<HeaderOrItem<T>>();
 
 
-    public  List<HeaderOrItem<T>> getAllItems() {
+    public  List<HeaderOrItem<T>> getAllHeaderedItems() {
         return allItems;
+    }
+
+    public List<T> getAllItems(){
+        ArrayList<T> items = new ArrayList<>();
+        for(HeaderOrItem<T> item : allItems){
+            if(item.header!=null)
+                continue;
+            items.add(item.item);
+        }
+        return items;
     }
 
     private List<T> source;
