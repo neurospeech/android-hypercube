@@ -321,7 +321,7 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
 
         if(position == allItems.size() - 1){
-            if(lastVisiblePosition != position){
+            if(lastVisiblePosition < position){
                 lastVisiblePosition = position;
                 HyperCubeApplication.current.post(new Runnable() {
                     @Override
