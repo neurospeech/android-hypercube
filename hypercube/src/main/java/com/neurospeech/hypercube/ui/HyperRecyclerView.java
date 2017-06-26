@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -85,12 +86,16 @@ public class HyperRecyclerView extends RecyclerView {
 
     public static final int HEADER_FOOTER_ITEM_TYPE = Integer.MIN_VALUE;
 
-    class ExAdapter extends Adapter{
+    public class ExAdapter extends Adapter{
 
 
 
         private final Adapter adapter;
         private final AdapterDataObserver observer;
+
+        public Adapter getAdapter(){
+            return adapter;
+        }
 
 
 
