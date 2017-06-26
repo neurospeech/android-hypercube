@@ -46,6 +46,10 @@ public abstract class HeaderedAdapter<T,VH extends RecyclerView.ViewHolder>
 
     private List<T> source;
 
+    public boolean hasItems(){
+        return source.size() > 0;
+    }
+
     public ModelFilter<T> getFilter() {
         return filter;
     }
