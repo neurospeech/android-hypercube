@@ -85,18 +85,22 @@ public class Promise<T> {
 
 
     public static PopupWindow show() {
-        Activity currentActivity = HyperCubeApplication.activity;
-        if(currentActivity==null)
+        try {
+            Activity currentActivity = HyperCubeApplication.activity;
+            if (currentActivity == null)
+                return null;
+
+            View view = currentActivity.getWindow().getDecorView();
+
+            if (view == null)
+                return null;
+
+            PopupWindow pw = creator.create(currentActivity);
+            pw.showAtLocation(view, Gravity.LEFT | Gravity.TOP, view.getWidth() / 2 - 30, view.getHeight() / 2 - 30);
+            return pw;
+        }catch (Exception ex){
             return null;
-
-        View view = currentActivity.getWindow().getDecorView();
-
-        if(view==null)
-            return null;
-
-        PopupWindow pw = creator.create(currentActivity);
-        pw.showAtLocation(view, Gravity.LEFT | Gravity.TOP, view.getWidth() / 2 - 30, view.getHeight() / 2 - 30);
-        return pw;
+        }
     }
 
     private List<IResultListener<T>> next;
@@ -203,6 +207,8 @@ public class Promise<T> {
                     HyperCubeApplication.current.post(new Runnable() {
                         @Override
                         public void run() {
+                            if(finished)
+                                return;
                             busy = show();
                         }
                     }, 100);
@@ -248,15 +254,7 @@ public class Promise<T> {
 
     public void onResult(T r,String error){
 
-        HyperCubeApplication.current.post(new Runnable() {
-            @Override
-            public void run() {
-                if (busy != null) {
-                    busy.dismiss();
-                }
-                busy = null;
-            }
-        });
+        hideProgress();
 
         result = r;
 
@@ -335,6 +333,20 @@ public class Promise<T> {
             }
         });
 
+    }
+
+    private boolean finished = false;
+    private void hideProgress() {
+        finished = true;
+        HyperCubeApplication.current.post(new Runnable() {
+            @Override
+            public void run() {
+                if (busy != null) {
+                    busy.dismiss();
+                }
+                busy = null;
+            }
+        });
     }
 
 
